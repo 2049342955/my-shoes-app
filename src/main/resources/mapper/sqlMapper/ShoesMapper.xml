@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.my.business.mapper.ShoesMapper" >
+  <resultMap id="BaseResultMap" type="com.my.business.entity.Shoes" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="brand" property="brand" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="color" property="color" jdbcType="VARCHAR" />
+    <result column="size" property="size" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="stock" property="stock" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="sales" property="sales" jdbcType="INTEGER" />
+  </resultMap>
+
+
+  <resultMap id="MyResultMap" type="com.my.business.entity.Shoes" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="brand" property="brand" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="color" property="color" jdbcType="VARCHAR" />
+    <result column="size" property="size" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="stock" property="stock" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="counts" property="sales" jdbcType="INTEGER" />
+  </resultMap>
+
+
+  <update id="updateStock">
+    UPDATE shoes s set s.stock = s.stock-#{shoes.stock},s.sales = s.sales + #{shoes.stock} where s.id = #{shoes.id};
+  </update>
+
+  <select id="getHome" resultMap="BaseResultMap">
+    select * from shoes s,(SELECT o.shoes_id as id,sum(o.number) as counts from orders o
+    where 1=1
+    <if test="order.date!=null">
+      <![CDATA[   and DATE_FORMAT(o.date, '%Y-%m-%d')>=  DATE_FORMAT(#{order.date}, '%Y-%m-%d') ]]>
+    </if>
+    GROUP BY shoes_id ORDER BY counts desc limit 9) as t where s.id =t.id;
+  </select>
+</mapper>
